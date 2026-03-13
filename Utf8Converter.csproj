@@ -5,8 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>Utf8Converter</AssemblyName>
-    <ApplicationIcon>app.ico</ApplicationIcon>
-    <Nullable>enable</Nullable>
+<Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <PublishSingleFile>true</PublishSingleFile>
