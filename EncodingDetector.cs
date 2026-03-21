@@ -72,13 +72,27 @@ public static class EncodingDetector
         return null;
     }
 
+    // Encodingi koje Ude često brkaju s Windows-1250 za slavenske jezike.
+    // Kad Ude vrati jedan od ovih, ignoriramo ga i padamo na Windows-1250 fallback.
+    private static readonly HashSet<string> AmbiguousLatinEncodings =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "windows-1252", "iso-8859-1", "iso-8859-2", "latin-1", "x-iso-8859-1"
+        };
+
     private static Encoding? DetectByUde(Stream stream)
     {
         var detector = new CharsetDetector();
         detector.Feed(stream);
         detector.DataEnd();
 
-        if (detector.Charset == null || detector.Confidence < 0.5f)
+        // Zahtijevamo visoku pouzdanost (0.85) da izbjegnemo krive detekcije
+        if (detector.Charset == null || detector.Confidence < 0.85f)
+            return null;
+
+        // Western European encodinge ignoriramo — često se brkaju s Windows-1250
+        // za tekst s dijakritičkim znakovima (č, š, ž, ć, đ)
+        if (AmbiguousLatinEncodings.Contains(detector.Charset))
             return null;
 
         try
